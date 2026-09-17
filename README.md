@@ -1,1 +1,2 @@
-# repo
+# eodp
+EODP main repository
