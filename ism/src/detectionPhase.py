@@ -104,7 +104,12 @@ class detectionPhase(initIsm):
         :param wv: Central wavelength of the band [m]
         :return: Toa in photons
         """
-        #TODO
+        self.constants.h_planck
+        self.constants.speed_light
+        toa=toa/1000
+        Ein=toa*area_pix*tint
+        E_ph=(self.constants.h_planck*self.constants.speed_light)/wv
+        toa_ph=(Ein/E_ph)
         return toa_ph
 
     def phot2Electr(self, toa, QE):
@@ -114,7 +119,9 @@ class detectionPhase(initIsm):
         :param QE: Quantum efficiency [e-/ph]
         :return: toa in electrons
         """
-        #TODO
+        FWC = self.ismConfig.FWC
+        toae = toa * QE
+        #toae=np.minimum(toae,FWC)
         return toae
 
     def badDeadPixels(self, toa,bad_pix,dead_pix,bad_pix_red,dead_pix_red):
@@ -138,6 +145,11 @@ class detectionPhase(initIsm):
         :return: TOA after adding PRNU [e-]
         """
         #TODO
+        normal = np.random.normal(0., 1., toa.shape[1])
+
+        for act in range(toa.shape[1]):
+            toa[:, act] = toa[:, act] * (1 + normal[act] * kprnu)
+
         return toa
 
 
@@ -153,4 +165,8 @@ class detectionPhase(initIsm):
         :return: TOA in [e-] with dark signal
         """
         #TODO
+        DSNU=np.abs(np.random.standard_normal())*kdsnu
+        Sd = ds_A_coeff * (T / Tref) ** 3 * np.exp(-ds_B_coeff * (1 / T - 1 / Tref))
+        Ds_act = Sd(1+DSNU)
+        toa=toa+Ds_act
         return toa

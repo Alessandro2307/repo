@@ -73,7 +73,7 @@ class mtf:
 
         # Calculate the System MTF
         self.logger.debug("Calculation of the Sysmtem MTF by multiplying the different contributors")
-        Hsys = 1 # dummy
+        MTF_system = Hdiff * Hdefoc * Hwfe * Hdet * Hsmear * Hmotion
 
         # Plot cuts ACT/ALT of the MTF
         self.plotMtf(Hdiff, Hdefoc, Hwfe, Hdet, Hsmear, Hmotion, Hsys, nlines, ncolumns, fnAct, fnAlt, directory, band)
@@ -117,7 +117,18 @@ class mtf:
         :param fr2D: 2D relative frequencies (f/fc), where fc is the optics cut-off frequency
         :return: diffraction MTF
         """
-        Hdiff=(2/np.pi)*((arccos(fr2D)-fr2D)*(1-fr2D**2)**(1/2))
+        Hdiff = np.zeros((fr2D.shape[0], fr2D.shape[1]))
+        for i in range(fr2D.shape[0]):
+            for j in range(fr2D.shape[1]):
+                if fr2D[i, j] < 1:
+                    Hdiff[i, j] = 2 / np.pi * (
+                                np.arccos(fr2D[i, j]) - fr2D[i, j] * np.sqrt((1 - (fr2D[i, j]) * fr2D[i, j])))
+                else:
+                    Hdiff[i, j] = 0.
+
+
+
+        return Hdiff
 
         return Hdiff
 
@@ -199,6 +210,6 @@ class mtf:
         :param band: band
         :return: N/A
         """
-        MTF_system = Hdiff * Hdefoc * Hwfe * Hdet * Hsmear * Hmotion
 
+        return MTF_system
 
