@@ -1,4 +1,3 @@
-
 from ism.src.initIsm import initIsm
 from math import pi
 from ism.src.mtf import mtf
@@ -92,7 +91,7 @@ class opticalPhase(initIsm):
         :param Tr: Optical transmittance [-]
         :return: TOA image in irradiances [mW/m2]
         """
-        toa=Tr*toa*(np.pi/4)*(D/f)**2
+        toa = Tr*toa*(np.pi/4)*(D/f)**2
         return toa
 
 
@@ -103,11 +102,12 @@ class opticalPhase(initIsm):
         :param Hsys: System MTF
         :return: TOA image in irradiances [mW/m2]
         """
-        GE=fft2(toa)
-        Hsys_shifted=fftshift(Hsys)
-        GE_filtered=GE*Hsys_shifted
-        GE_ifft=ifft2(GE_filtered)
-        toa_ft=np.real(GE_ifft)
+        # TODO
+        GE = fft2(toa)
+        Hsys_shifted = fftshift(Hsys)
+        GE_filtered = GE*Hsys_shifted
+        GE_ifft = ifft2(GE_filtered)
+        toa_ft =np.real(GE_ifft)
 
         return toa_ft
 
@@ -119,7 +119,7 @@ class opticalPhase(initIsm):
         :param band: band
         :return: TOA image 2D in radiances [mW/m2]
         """
-        isrf, wv_isrf = readIsrf(self.auxdir + '/' + self.ismConfig.isrffile, band)
+        isrf, wv_isrf = readIsrf(self.auxdir+'/'+self.ismConfig.isrffile, band)
 
         # 0 init output
         toa = np.zeros((sgm_toa.shape[0], sgm_toa.shape[1]))
@@ -128,17 +128,23 @@ class opticalPhase(initIsm):
         isrf = isrf / np.sum(isrf)
 
         # 2 convert ISRF  wavelenghts in nanometers x1000
-        wv_isrf = wv_isrf * 1000  # nm
+        wv_isrf = wv_isrf * 1000 #nm
 
         # creating interpolant of the ISRF
-        #cs = interp1d(wv_isrf, isrf, fill_value=(0, 0), bounds_error=False)
+        #cs = interp1d(wv_isrf, isrf,fill_value=(0,0) , bounds_error= False)
 
-        #interp_isrf = cs(sgm_wv)  # ID vector
-        #toa[ialt,iact]=np.sum(sgm_toa[ialt,iact,:]*interp_isrf)
-        for ialt in range(sgm_toa.shape[0]):
-           for iact in range(sgm_toa.shape[1]):
-            cs = interp1d(sgm_wv, sgm_toa[ialt,iact,:], fill_value=(0, 0), bounds_error=False)
-            sgm_inter=cs(wv_isrf)
-        toa[ialt,iact]=sum(sgm_inter*isrf)
+        #interp_isrf = cs(sgm_wv) # ID vector
+
+        #for ialt in range (sgm_toa.shape[0]):
+         #   for iact in range (sgm_toa.shape[1]):
+         #      toa[ialt, iact] = np.sum(sgm_toa[ialt, iact, :] * interp_isrf)
+         #return toa
+        for ialt in range (sgm_toa.shape[0]):
+            for iact in range (sgm_toa.shape[1]):
+                cs = interp1d(sgm_wv, sgm_toa[ialt, iact, :], fill_value=(0, 0), bounds_error=False)
+                sgm_inter = cs(wv_isrf)
+                toa[ialt, iact] = sum(sgm_inter*isrf)
+
+
         return toa
 
