@@ -1,8 +1,8 @@
-
 from ism.src.initIsm import initIsm
 import numpy as np
 from common.plot.plotMat2D import plotMat2D
 from common.plot.plotF import plotF
+
 
 class videoChainPhase(initIsm):
 
@@ -16,32 +16,32 @@ class videoChainPhase(initIsm):
         # -------------------------------------------------------------------------------
         self.logger.info("EODP-ALG-ISM-3010: Electrons to Voltage – Read-out and Amplification")
         toa = self.electr2Volt(toa,
-                         self.ismConfig.OCF,
-                         self.ismConfig.ADC_gain)
+                               self.ismConfig.OCF,
+                               self.ismConfig.ADC_gain)
 
-        self.logger.debug("TOA [0,0] " +str(toa[0,0]) + " [V]")
+        self.logger.debug("TOA [0,0] " + str(toa[0, 0]) + " [V]")
 
         # Digitisation
         # -------------------------------------------------------------------------------
         self.logger.info("EODP-ALG-ISM-3020: Voltage to Digital Numbers – Digitisation")
         toa = self.digitisation(toa,
-                          self.ismConfig.bit_depth,
-                          self.ismConfig.min_voltage,
-                          self.ismConfig.max_voltage)
+                                self.ismConfig.bit_depth,
+                                self.ismConfig.min_voltage,
+                                self.ismConfig.max_voltage)
 
-        self.logger.debug("TOA [0,0] " +str(toa[0,0]) + " [DN]")
+        self.logger.debug("TOA [0,0] " + str(toa[0, 0]) + " [DN]")
 
         # Plot
         if self.ismConfig.save_vcu_stage:
             saveas_str = self.globalConfig.ism_toa_vcu + band
             title_str = 'TOA after the VCU phase [DN]'
-            xlabel_str='ACT'
-            ylabel_str='ALT'
+            xlabel_str = 'ACT'
+            ylabel_str = 'ALT'
             plotMat2D(toa, title_str, xlabel_str, ylabel_str, self.outdir, saveas_str)
 
-            idalt = int(toa.shape[0]/2)
+            idalt = int(toa.shape[0] / 2)
             saveas_str = saveas_str + '_alt' + str(idalt)
-            plotF([], toa[idalt,:], title_str, xlabel_str, ylabel_str, self.outdir, saveas_str)
+            plotF([], toa[idalt, :], title_str, xlabel_str, ylabel_str, self.outdir, saveas_str)
 
         return toa
 
@@ -55,7 +55,8 @@ class videoChainPhase(initIsm):
         :param gain_adc: Gain of the Analog-to-digital conversion [-]
         :return: output toa in [V]
         """
-        toa=toa*OCF*gain_adc
+        toa = toa * OCF * gain_adc
+        # TODO
         return toa
 
     def digitisation(self, toa, bit_depth, min_voltage, max_voltage):
@@ -67,6 +68,12 @@ class videoChainPhase(initIsm):
         :param max_voltage: maximum voltage
         :return: toa in digital counts
         """
-        toa_dn=np.round(toa/(max_voltage-min_voltage)*(2**(bit_depth)-1))
+        satval = (2 ** bit_depth - 1)
+        toa_dn = np.round(toa * (satval) / (max_voltage - min_voltage))
+
+        for ii in range(toa.shape[0]):
+            for jj in range(toa.shape[1]):
+                toa[ii, jj] = np.min((toa[ii, jj], satval))
+
         return toa_dn
 

@@ -1,4 +1,3 @@
-
 # INSTRUMENT MODULE
 
 from ism.src.initIsm import initIsm
@@ -8,13 +7,13 @@ from ism.src.videoChainPhase import videoChainPhase
 from common.io.readCube import readCube
 from common.io.writeToa import writeToa
 
+
 class ism(initIsm):
 
     def __init__(self, auxdir, indir, outdir):
         super().__init__(auxdir, indir, outdir)
 
     def processModule(self):
-
         self.logger.info("Start of the Instrument Module")
 
         # Read input TOA cube
@@ -22,7 +21,6 @@ class ism(initIsm):
         sgm_toa, sgm_wv = readCube(self.indir, self.globalConfig.scene)
 
         for band in self.globalConfig.bands:
-
             self.logger.info("Start of BAND " + band)
 
             # Optical Phase

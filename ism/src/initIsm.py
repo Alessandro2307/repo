@@ -1,10 +1,10 @@
 from config.ismConfig import ismConfig
 from common.src.baseModule import baseModule
 
+
 class initIsm(baseModule):
 
     def __init__(self, auxdir, indir, outdir):
-
         # Initialise baseModule (the log, etc.)
         super().__init__(auxdir, indir, outdir, "ISM")
 
