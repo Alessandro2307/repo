@@ -8,7 +8,7 @@ from netCDF4 import Dataset
 # ------------------------- EDIT THESE THREE PATHS -------------------------
 MY_OUTPUT = Path(r"C:\Users\SHARED\EODP_TER_2021\EODP-TS-ISM\myoutput")
 REFERENCE_OUTPUT = Path(r"C:\Users\SHARED\EODP_TER_2021\EODP-TS-ISM\output")
-REPORT_OUTPUT = Path(r"C:\Users\SHARED\EODP_TER_2021\EODP-TS-ISM\Test")
+REPORT_OUTPUT = Path(r"C:\Users\SHARED\EODP_TER_2021\EODP-TS-ISM\Test_output_ISM_1")
 # ------------------------------------------------------------------------
 
 BANDS = ["VNIR-0", "VNIR-1", "VNIR-2", "VNIR-3"]
@@ -60,7 +60,7 @@ def check_one(stage, band, prefix):
     print(f"  pixel[{i},{j}]: ours={ours[i,j]:.10g}, reference={ref[i,j]:.10g}, "
           f"relative_error={relative_pct[i,j]:.6g}%")
 
-    
+
     mid = ours.shape[0] // 2
     fig, ax = plt.subplots(figsize=(9, 4.8))
     ax.plot(ref[mid, :], color='tab:blue', label='Reference', linewidth=2)
