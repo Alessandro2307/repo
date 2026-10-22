@@ -4,10 +4,10 @@
 from l1c.src.l1c import l1c
 
 # Directory - this is the common directory for the execution of the E2E, all modules
-auxdir = r'C:/Users/Aless/Desktop/EARTH/repo/auxiliary'
+auxdir = r'C:\\Users\\Aless\\Desktop\\EARTH\\repo\\auxiliary'
 # GM dir + L1B dir
-indir = r'C:/Users/SHARED/EODP_TER_2021/EODP-TS-L1C/input/gm_alt100_act_150,C:/Users/SHARED/EODP_TER_2021/EODP-TS-L1C/input/l1b_output'
-outdir = r'C:/Users/SHARED/EODP_TER_2021/EODP-TS-L1C/myoutput'
+indir = r'C:\\Users\\SHARED\\EODP-TS-E2E\\gm_out,C:\\Users\\SHARED\\EODP-TS-E2E\\output_2'
+outdir = r'C:\\Users\\SHARED\\EODP-TS-E2E\\output_3'
 
 # Initialise the ISM
 myL1c = l1c(auxdir, indir, outdir)
