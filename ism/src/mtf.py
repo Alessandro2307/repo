@@ -214,6 +214,6 @@ class mtf:
         """
         MTF_system = Hdiff * Hdefoc * Hwfe * Hdet * Hsmear * Hmotion
 
-        # TODO
+
         return MTF_system
 
